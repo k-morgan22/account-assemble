@@ -196,9 +196,9 @@ Resources:
     Properties:
       FunctionName: producer
       CodeUri: lambdas/producer.py
-      Handler: producer.lambda_handler
+      Handler: producer.handler
       Layers:
-        - arn:aws:lambda:us-east-1:113088814899:layer:Klayers-python37-requests:14
+        - arn:aws:lambda:us-east-1:113088814899:layer:Klayers-python37-crhelper:4
       Policies: 
         - Version: '2012-10-17'
           Statement:
@@ -271,7 +271,7 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws.organizations
+                - aws-organizations
               detail-type: 
                 - AWS Service Event via CloudTrail
               detail:
@@ -312,7 +312,7 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws.organizations
+                - aws-organizations
               detail-type: 
                 - AWS Service Event via CloudTrail
               detail:
@@ -353,7 +353,7 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws.organizations
+                - aws-organizations
               detail-type: 
                 - AWS Service Event via CloudTrail
               detail: 
@@ -458,4 +458,14 @@ Resources:
   #               trigger: 
   #                 - "delete"
 
-
+##########################################################################
+#  trigger producer.py and start automated process                       #
+##########################################################################
+  TriggerProducer:
+    DependsOn: 
+      - enableLoggingFunction
+      - enableLoggingFunctiontrigger
+      - enableLoggingFunctiontriggerPermission
+    Type: "Custom::TriggerProducer"
+    Properties:
+      ServiceToken: !GetAtt producerFunction.Arn
