@@ -48,7 +48,7 @@ def formatFailure(function, condition, errorType, message):
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": ":warning: ERROR :warning:\n Error Type: " + errorType + " \n Error Message: " + message
+          "text": ":warning: ERROR :warning:\n *Error Type:* " + errorType + " \n *Error Message:* " + message
         }
       },
       {

@@ -271,9 +271,9 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws-organizations
+                - aws.organizations
               detail-type: 
-                - AWS Service Event via CloudTrail
+                - AWS API Call via CloudTrail
               detail:
                 userIdentity:
                   sessionContext:
@@ -282,6 +282,8 @@ Resources:
                         - !GetAtt organizationRole.Arn                
                 eventName: 
                   - "CreateOrganizationalUnit"
+                eventSource:
+                  - "organizations.amazonaws.com"
                 requestParameters: 
                   name:
                     - "Workloads" 
@@ -312,12 +314,14 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws-organizations
+                - aws.organizations
               detail-type: 
-                - AWS Service Event via CloudTrail
+                - AWS API Call via CloudTrail
               detail:
                 eventName: 
                   - "CreateAccountResult"
+                eventSource:
+                  - "organizations.amazonaws.com"
                 serviceEventDetails: 
                   createAccountStatus:
                     state:
@@ -353,9 +357,9 @@ Resources:
           Properties:
             Pattern:
               source: 
-                - aws-organizations
+                - aws.organizations
               detail-type: 
-                - AWS Service Event via CloudTrail
+                - AWS API Call via CloudTrail
               detail: 
                 userIdentity:
                   sessionContext:
@@ -364,6 +368,8 @@ Resources:
                         - !GetAtt organizationRole.Arn 
                 eventName: 
                   - "MoveAccount"
+                eventSource:
+                  - "organizations.amazonaws.com"
                 
 
 
