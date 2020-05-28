@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Description: template to create new account in an organization
@@ -232,6 +232,7 @@ Resources:
         trigger:
           Type: EventBridgeRule
           Properties:
+            InputPath: $.detail.metadata
             Pattern:
               source: 
                 - assembler-producer
@@ -269,11 +270,10 @@ Resources:
         trigger:
           Type: EventBridgeRule
           Properties:
+            InputPath: $.detail.requestParameters
             Pattern:
               source: 
                 - aws.organizations
-              detail-type: 
-                - AWS API Call via CloudTrail
               detail:
                 userIdentity:
                   sessionContext:
@@ -312,11 +312,10 @@ Resources:
         trigger:
           Type: EventBridgeRule
           Properties:
+            InputPath: $.detail.serviceEventDetails.createAccountStatus
             Pattern:
               source: 
                 - aws.organizations
-              detail-type: 
-                - AWS API Call via CloudTrail
               detail:
                 eventName: 
                   - "CreateAccountResult"
@@ -327,7 +326,6 @@ Resources:
                     state:
                       - "SUCCEEDED"
 
-#add more granularity to rule trigger to limit accidental triggers
 
 ##########################################################################
 #  stackset Function & Destination & EventBridge Rule                    #
@@ -355,11 +353,10 @@ Resources:
         trigger:
           Type: EventBridgeRule
           Properties:
+            InputPath: $.detail.requestParameters
             Pattern:
               source: 
                 - aws.organizations
-              detail-type: 
-                - AWS API Call via CloudTrail
               detail: 
                 userIdentity:
                   sessionContext:
@@ -397,6 +394,7 @@ Resources:
         trigger:
           Type: EventBridgeRule
           Properties:
+            InputPath: $.detail.metadata
             Pattern:
               source: 
                 - assembler-stackset
