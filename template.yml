@@ -118,6 +118,8 @@ Resources:
                   - cloudformation:*
                   - ssm:*
                   - events:PutEvents
+                  - iam:GetRole
+                  - iam:CreateServiceLinkedRole
                 Resource: "*"
               - Effect: Allow 
                 Action:
@@ -125,6 +127,10 @@ Resources:
                 Resource:
                   - !Ref onFailureTopic
                   - !Ref onSuccessTopic
+              - Effect: Allow 
+                Action:
+                  - s3:GetObject
+                Resource: arn:aws:s3:::testing-org-lambda/*
 
 ##########################################################################
 # Lambda Destinations Topics & Function & DLQ                            #
