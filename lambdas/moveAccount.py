@@ -48,8 +48,5 @@ def lambda_handler(event, context):
 
   if accountName in ["Dev", "Staging", "Prod"]:
     moveAccount(accountId, masterId, workloadsId)
-    message = "accountName: " + accountName + ", accountId: " + accountId
-
-    return message
   else:
     logger.info("Accidental Trigger")

@@ -93,9 +93,6 @@ def putEvent():
 def lambda_handler(event, context):
   #todo: check if stackset instance exists for particular ou
   envStackName = createBaseStack()
-  # deployBaselineStack(envStackName, workloadsId)
+  deployBaselineStack(envStackName, workloadsId)
 
-  # putEvent()
-  message = envStackName
-
-  return message
+  putEvent()
