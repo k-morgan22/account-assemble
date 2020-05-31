@@ -230,6 +230,8 @@ Resources:
               - cloudtrail:*
               - organizations:*
               - s3:*
+              - iam:GetRole
+              - iam:CreateServiceLinkedRole
 
 
 ##########################################################################

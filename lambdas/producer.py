@@ -20,6 +20,7 @@ def create(event, context):
   else:
     createTrail(accountId)
 
+  putEvent()
 
 @helper.update
 @helper.delete
@@ -33,10 +34,8 @@ def checkTrail():
   if response['Trails']: 
     exists = True
     name = response['Trails'][0]['Name']
-    print("trail exists")
   else: 
     name = None
-    print("trail does not exist")
 
   return exists, name
 
@@ -47,24 +46,18 @@ def checkLogging(name):
   
   logging = response['IsLogging']
   if logging:
-    print("logging already enabled")
     return
   else:
-    print("logging wasn't enabled but now is")
     trail.start_logging(
       Name = name
     )
   
-  
-  
 def createTrail(accountId):  
   bucketName = f"cloudtrail-logs-{accountId}"
-  print(bucketName)
   
   createBucket = s3.create_bucket(
     Bucket = bucketName
   )
-  print("bucket created")
   
   policy = {
     "Version": "2012-10-17",
@@ -90,20 +83,24 @@ def createTrail(accountId):
   putPolicy = s3.put_bucket_policy(
     Bucket = bucketName,
     Policy = json.dumps(policy)
-      
   )
-  print("policy created")
   
+  trailAccess = org.enable_aws_service_access(
+    ServicePrincipal='cloudtrail.amazonaws.com'
+  )
+
   create = trail.create_trail(
     Name = "organization-trail-DO-NOT-DELETE",
-    S3BucketName = bucketName
+    S3BucketName = bucketName,
+    IncludeGlobalServiceEvents = True,
+    IsMultiRegionTrail = True,
+    EnableLogFileValidation = True,
+    IsOrganizationTrail = True
   )
-  print("trail created")
   
   logging = trail.start_logging(
     Name = "organization-trail-DO-NOT-DELETE"
   )
-  print("trail logging")
 
 
 def putEvent():
