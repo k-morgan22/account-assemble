@@ -1,5 +1,6 @@
 import json
 import boto3
+import os
 
 ssm = boto3.client('ssm')
 org = boto3.client('organizations')
@@ -27,8 +28,8 @@ def createAccount(accountEmail, accountName):
   )
 
 def lambda_handler(event, context):
-  accountName = "dev"
+  accountName = os.environ['accountName']
 
   email = getEmail('/account-assemble/emails', accountName)
-  createAccount(email, accountName.capitalize())
+  createAccount(email, accountName)
 

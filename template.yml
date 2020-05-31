@@ -10,13 +10,22 @@ Globals:
     Timeout: 30
   
 Parameters:
-  DevAccountEmail:
-    Description: Email address used create a dev environment account 
+  AccountEmail:
+    Description: Email address used to create an environment account 
     Type: String
     MinLength: 6
     MaxLength: 64
     AllowedPattern: ^[_A-Za-z0-9-\+\.]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$
     ConstraintDescription: Account Email can contain only ASCII characters. This must be in the format of something@email.com
+
+  AccountName:
+    Description: Name of the account to create. Choose Dev, Staging, or Prod. Default is Dev
+    Type: String
+    Default: Dev 
+    AllowedValues:
+      - Dev
+      - Staging 
+      - Prod
 
   SlackWebHookUrl:
     Description: Incoming WebHooks Integration for slack channel messaging 
@@ -29,15 +38,18 @@ Metadata:
     - Label:
         default: Organization Workloads OU Configuration 
       Parameters:
-      - DevAccountEmail
+      - AccountEmail
+      - AccountName
     - Label:
         default: Slack Channel Messaging Configuration 
       Parameters:
       - SlackWebHookUrl
     
     ParameterLabels:
-      DevAccountEmail:
-        default: Dev Account Email Address
+      AccountEmail:
+        default: Account Email Address
+      AccountName:
+        default: Account Name
       SlackWebHookUrl:
         default: Slack WebHook Url
   
@@ -50,9 +62,9 @@ Resources:
     Type: "AWS::SSM::Parameter"
     Properties:
       Type: String 
-      Description: Email address used to create new dev account
-      Value: !Ref DevAccountEmail 
-      Name: !Sub /account-assemble/emails/dev-${AWS::AccountId}
+      Description: Email address used to create a new account
+      Value: !Ref AccountEmail 
+      Name: !Sub /account-assemble/emails/${AccountName}-${AWS::AccountId}
 
   slackSecret:
     Type: "AWS::SecretsManager::Secret"
@@ -263,6 +275,9 @@ Resources:
       CodeUri: lambdas/createAccount.py
       Handler: createAccount.lambda_handler
       Role: !GetAtt organizationRole.Arn
+      Environment:
+        Variables:
+          accountName: !Ref AccountName
       EventInvokeConfig: 
         MaximumRetryAttempts: 2
         DestinationConfig:
@@ -305,6 +320,9 @@ Resources:
       CodeUri: lambdas/moveAccount.py
       Handler: moveAccount.lambda_handler
       Role: !GetAtt organizationRole.Arn
+      Environment:
+        Variables:
+          accountEmail: !Ref AccountEmail
       EventInvokeConfig: 
         MaximumRetryAttempts: 2
         DestinationConfig:
@@ -387,6 +405,9 @@ Resources:
       CodeUri: lambdas/enableLogging.py
       Handler: enableLogging.lambda_handler
       Role: !GetAtt accountSetupRole.Arn
+      Environment:
+        Variables:
+          accountEmail: !Ref AccountEmail
       EventInvokeConfig: 
         MaximumRetryAttempts: 2
         DestinationConfig:

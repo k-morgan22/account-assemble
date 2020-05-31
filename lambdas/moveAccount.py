@@ -1,5 +1,6 @@
 import boto3
 import logging
+import os
 
 ssm = boto3.client('ssm')
 org = boto3.client('organizations')
@@ -25,13 +26,13 @@ def getOrgIds(path, decryption):
 
 [masterId, workloadsId] = getOrgIds('/account-assemble/orgIds', False)
 
-def grabName(accountId):
+def grabEmail(accountId):
   response = org.describe_account(
     AccountId = accountId
   )
 
-  name = response['Account']['Name']
-  return name
+  email = response['Account']['Email']
+  return email
 
 
 def moveAccount(newAccountId, rootId, destinationId):
@@ -44,9 +45,10 @@ def moveAccount(newAccountId, rootId, destinationId):
 
 def lambda_handler(event, context):
   accountId = event['accountId']
-  accountName = grabName(accountId)
+  accountEmail = grabEmail(accountId)
+  accountParameter = os.environ['accountEmail']
 
-  if accountName in ["Dev", "Staging", "Prod"]:
+  if accountEmail == accountParameter:
     moveAccount(accountId, masterId, workloadsId)
   else:
     logger.info("Accidental Trigger")

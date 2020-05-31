@@ -50,8 +50,7 @@ def addEvent(trailName, bucket):
   )
 
 def lambda_handler(event, context):
-  accountEmail = os.environ['email']
-  
+  accountEmail = os.environ['accountEmail']
 
   orgEnabled, trailName = isOrg()
 
