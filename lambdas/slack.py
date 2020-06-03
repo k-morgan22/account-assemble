@@ -18,7 +18,7 @@ def formatSuccess(function):
   if function == "createOu":
     messageBody = "Workloads OU created"
   elif function == "createAccount":
-    messageBody = "Dev Account created"
+    messageBody = "Account created"
   elif function == "moveAccount":
     messageBody = "Account moved to Workloads OU"
   elif function == "stackset":
@@ -48,7 +48,7 @@ def formatFailure(function, condition, errorType, message):
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": ":warning: ERROR :warning:\n Error Type: " + errorType + " \n Error Message: " + message
+          "text": ":warning: ERROR :warning:\n *Error Type:* " + errorType + " \n *Error Message:* " + message
         }
       },
       {
